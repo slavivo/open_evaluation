@@ -1,12 +1,11 @@
 import configparser
 import argparse
 import logging
-import os
 import openai
 import json
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 from termcolor import colored
-from typing import Tuple
+from typing import Tuple, Dict
 
 logging.basicConfig(level=logging.INFO)
 config = configparser.ConfigParser()
@@ -15,46 +14,64 @@ API_KEY = config["DEFAULT"]["OPENAI_API_KEY"]
 GPT_MODEL = config["DEFAULT"]["GPT_MODEL"]
 
 
+class RequestParams:
+    """
+    This class defines the parameters for the request to the OpenAI API
+    """
+
+    def __init__(
+        self,
+        client,
+        messages=None,
+        tools=None,
+        tool_choice=None,
+        model=GPT_MODEL,
+        max_tokens=150,
+        temperature=0.7,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0,
+    ):
+        self.client = client
+        self.messages = messages
+        self.tools = tools
+        self.tool_choice = tool_choice
+        self.model = model
+        self.max_tokens = max_tokens
+        self.temperature = temperature
+        self.top_p = top_p
+        self.frequency_penalty = frequency_penalty
+        self.presence_penalty = presence_penalty
+
+    def get_params(self) -> Dict:
+        """
+        This function returns the parameters for the request to the OpenAI API
+        """
+        return {
+            "messages": self.messages,
+            "tools": self.tools,
+            "tool_choice": self.tool_choice,
+            "model": self.model,
+            "max_tokens": self.max_tokens,
+            "temperature": self.temperature,
+            "top_p": self.top_p,
+            "frequency_penalty": self.frequency_penalty,
+            "presence_penalty": self.presence_penalty,
+        }
+
+
 @retry(wait=wait_random_exponential(multiplier=1, max=40), stop=stop_after_attempt(3))
 def chat_completion_request(
-    client,
-    messages,
-    tools=None,
-    tool_choice=None,
-    model=GPT_MODEL,
-    max_tokens=150,
-    temperature=0.7,
-    top_p=1.0,
-    frequency_penalty=0.0,
-    presence_penalty=0.0,
+    params: RequestParams,
 ) -> openai.types.chat.chat_completion.ChatCompletion:
     """
     This function sends a request to the OpenAI API to generate a chat completion response
 
     Parameters:
-    client (openai.Client): OpenAI API client
-    messages (list): List of messages in the conversation
-    tools (list): List of tools to use in the completion
-    tool_choice (str): Tool choice to use in the completion
-    model (str): Model to use for the completion
-    max_tokens (int): Maximum number of tokens to generate
-    temperature (float): Controls randomness: lower temperature results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive.
-    top_p (float): Controls diversity via nucleus sampling: 0.5 means half of all likelihood-weighted options are considered
-    frequency_penalty (float): Adjusts the frequency of words in the response
-    presence_penalty (float): Adjusts the presence of words in the response
+    params (RequestParams): The parameters for the request to the OpenAI API
     """
     try:
-        response = client.chat.completions.create(
-            model=model,
-            messages=messages,
-            tools=tools,
-            tool_choice=tool_choice,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            top_p=top_p,
-            frequency_penalty=frequency_penalty,
-            presence_penalty=presence_penalty,
-        )
+        response = params.client.chat.completions.create(**params.get_params())
         return response
     except Exception as e:
         print("Unable to generate ChatCompletion response")
@@ -190,6 +207,47 @@ def get_feedback_prompt_and_message(
     return feedback_prompt, feedback_message
 
 
+def get_request_params(
+    client,
+    messages=None,
+    tools=None,
+    tool_choice=None,
+    model=GPT_MODEL,
+    max_tokens=150,
+    temperature=0.7,
+    top_p=1.0,
+    frequency_penalty=0.0,
+    presence_penalty=0.0,
+) -> RequestParams:
+    """
+    This function returns the parameters for the request to the OpenAI API for providing feedback
+
+    Parameters:
+    client (openai.Client): OpenAI API client
+    messages (list): List of messages in the conversation
+    tools (list): List of tools to use in the request
+    tool_choice (str): The tool choice to use in the request
+    model (str): The model to use in the request
+    max_tokens (int): The maximum number of tokens to generate
+    temperature (float): The sampling temperature
+    top_p (float): The nucleus sampling parameter
+    frequency_penalty (float): The frequency penalty
+    presence_penalty (float): The presence penalty
+    """
+    return RequestParams(
+        client=client,
+        messages=messages,
+        tools=tools,
+        tool_choice=tool_choice,
+        model=model,
+        max_tokens=max_tokens,
+        temperature=temperature,
+        top_p=top_p,
+        frequency_penalty=frequency_penalty,
+        presence_penalty=presence_penalty,
+    )
+
+
 def evaluate_answer(
     client, question, criteria, answer, use_feedback=False, czech=False
 ) -> None:
@@ -213,7 +271,9 @@ def evaluate_answer(
         {"role": "user", "content": feedback_message},
     ]
 
-    response = chat_completion_request(client, messages)
+    feedback_params = get_request_params(client, messages=messages)
+
+    response = chat_completion_request(feedback_params)
     messages.append(
         {"role": "assistant", "content": response.choices[0].message.content}
     )
@@ -234,7 +294,9 @@ def evaluate_answer(
         {"role": "user", "content": grade_message},
     ]
 
-    response = chat_completion_request(client, messages)
+    grade_params = get_request_params(client, messages=messages)
+
+    response = chat_completion_request(grade_params)
     messages.append(
         {"role": "assistant", "content": response.choices[0].message.content}
     )
