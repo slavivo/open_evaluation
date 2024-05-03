@@ -9,7 +9,8 @@ from typing import Tuple, Dict
 
 logging.basicConfig(level=logging.INFO)
 config = configparser.ConfigParser()
-config.read("config.ini")
+# You need to create a config.ini file with your OpenAI API key and GPT model
+config.read("src/config.ini")
 API_KEY = config["DEFAULT"]["OPENAI_API_KEY"]
 GPT_MODEL = config["DEFAULT"]["GPT_MODEL"]
 
@@ -317,10 +318,10 @@ def main():
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        "-i",
         "--input",
-        type=str,
-        default="file",
-        help="Type of input: file or console. Default is file",
+        action="store_true",
+        help="Optional arguement to specify if the input should be from the console.",
     )
     parser.add_argument(
         "-f",
@@ -353,8 +354,8 @@ def main():
 
     question, criteria, answer = "", "", ""
 
-    if args.input == "file":
-        input_file = "../data/answers.json"
+    if not args.input:
+        input_file = "data/answers.json"
         with open(input_file, "r") as file:
             data = json.load(file)
             # TODO change to get all questions

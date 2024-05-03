@@ -1,0 +1,24 @@
+{
+    "data": [
+      {
+        "question": "Explain what a neuron is, detailing how they transmit information and what unique features they have.",
+        "criteria": "Must include the terms “synapse” and “action potential.” Must mention the role of neurotransmitters.",
+        "answer": "Neurons are cells that transmit information to other nerve, muscle, or gland cells. They use synapses"
+      },
+      {
+        "question": "What are the components and structure of a molecule of DNA?",
+        "criteria": "Mention base pairs, sugar, and phosphate. Describe that DNA is a double helix. Note that base pairs pair up in a specific way using hydrogen bond (AT and GC).",
+        "answer": "DNA is a complex molecule and it is shaped like a double helix ladder, where the rungs are base pairs ATGC and the scaffold is sugars and phosphates. The base pairs bind (A with G) and (C with T) using hydrogen bonds, which can be separated when the DNA is being read or duplicated."
+      },
+      {
+        "question": "How can large language models introduce biases into student evaluation?",
+        "criteria": "None provided",
+        "answer": "LLMs have bias because their training data can have toxic, biased, or inaccurate data in it. When evaluating students, LLMs could also penalize students that know information that is more recent or otherwise outside the LLM’s training set, which may appear to be inaccurate to the AI model. LLMs are also not designed to keep track of accurate information; they are autoregressive language models, and so they do not have a legitimate hold on fact and caution should be used when depending on an AI model for subtle communication."
+      },
+      {
+        "question": "How can large language models introduce biases into student evaluation? ",
+        "criteria": "None provided",
+        "answer": "LLMs are biased because they're made by large companies."
+      }
+    ]
+  }
