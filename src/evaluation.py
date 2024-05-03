@@ -27,7 +27,7 @@ class RequestParams:
         tools=None,
         tool_choice=None,
         model=GPT_MODEL,
-        max_tokens=150,
+        max_tokens=300,
         temperature=0.7,
         top_p=1.0,
         frequency_penalty=0.0,
@@ -216,7 +216,7 @@ def get_request_params(
     tools=None,
     tool_choice=None,
     model=GPT_MODEL,
-    max_tokens=150,
+    max_tokens=400,
     temperature=0.7,
     top_p=1.0,
     frequency_penalty=0.0,
@@ -359,7 +359,7 @@ def main():
         with open(input_file, "r") as file:
             data = json.load(file)
             # TODO change to get all questions
-            data = data["data"][0]
+            data = data["data"][6]
             question = data["question"]
             criteria = data["criteria"]
             answer = data["answer"]

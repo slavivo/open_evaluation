@@ -19,6 +19,26 @@
         "question": "How can large language models introduce biases into student evaluation? ",
         "criteria": "None provided",
         "answer": "LLMs are biased because they're made by large companies."
+      },
+      {
+        "question": "Vysvětlete, co je to neuron, jak přenáší informace a jaké má jedinečné vlastnosti.",
+        "criteria": "Musí obsahovat pojmy ‚synapse‘ a ‚akční potenciál‘.“ Musí zmínit úlohu neurotransmiterů.",
+        "answer": "Neurony jsou buňky, které předávají informace jiným nervovým, svalovým nebo žlázovým buňkám. Používají synapse."
+      },
+      {
+        "question": "Jaké jsou složky a struktura molekuly DNA?",
+        "criteria": "Uveďte páry bází, cukr a fosfát. Popište, že DNA je dvojitá šroubovice. Všimněte si, že páry bází se párují specifickým způsobem pomocí vodíkové vazby (AT a GC).",
+        "answer": "DNA je složitá molekula a má tvar dvojitého šroubovicového žebříku, kde příčky tvoří páry bází ATGC a lešení tvoří cukry a fosfáty. Páry bází se spojují (A s G) a (C s T) pomocí vodíkových vazeb, které se mohou při čtení nebo duplikaci DNA oddělit."
+      },
+      {
+        "question": "Jak mohou velké jazykové modely vnášet do hodnocení studentů zkreslení?",
+        "criteria": "Nebylo zadáno",
+        "answer": "Modely LLM mají zkreslení, protože jejich trénovací data mohou obsahovat toxická, zkreslená nebo nepřesná data. Při hodnocení studentů by LLM mohly penalizovat i studenty, kteří znají informace, které jsou novější nebo jinak mimo tréninkovou množinu LLM, což se modelu umělé inteligence může jevit jako nepřesné. LLM také nejsou určeny k tomu, aby sledovaly přesné informace; jsou to autoregresivní jazykové modely, a proto nemají legitimní držení faktů a při závislosti na modelu UI pro jemnou komunikaci je třeba postupovat obezřetně."
+      },
+      {
+        "question": "Jak mohou velké jazykové modely vnášet do hodnocení studentů zkreslení?",
+        "criteria": "Nebylo zadáno",
+        "answer": "LLM jsou zkreslené, protože je vytvářejí velké společnosti."
       }
     ]
   }
