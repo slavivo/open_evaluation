@@ -31,6 +31,7 @@ class RequestParams:
         top_p=1.0,
         frequency_penalty=0.0,
         presence_penalty=0.0,
+        seed=None,
     ):
         self.client = client
         self.messages = messages
@@ -42,6 +43,7 @@ class RequestParams:
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
+        self.seed = seed
 
     def get_params(self) -> Dict:
         """
@@ -167,7 +169,7 @@ def get_grade_prompt_and_message(
         grade_prompt = f"You are simulating a teacher's assessment. You will be given answer to this question:\n\n{question}\n\n"
         if use_feedback:
             grade_prompt += "The input may also include feedback from a teacher to the question, which you can also use when grading.\n\n"
-        grade_prompt = f"You should also use these additional criterias when evaluation the answer:\n\n{criteria}\n\nThe possible grades are: excellent, good, poor."
+        grade_prompt = f"You should also use these additional criterias when evaluation the answer:\n\n{criteria}\n\nThe possible grades are: excellent, good, poor. Your answer should be just the grade."
 
         grade_message = f"The student's answer to be evaluated:\n{answer}"
         if use_feedback:
@@ -176,7 +178,7 @@ def get_grade_prompt_and_message(
         grade_prompt = f"Simulujete hodnocení učitele. Budete poskytnuta odpověď na tuto otázku:\n\n{question}\n\n"
         if use_feedback:
             grade_prompt += "Vstup může také zahrnovat zpětnou vazbu od učitele k otázce, kterou můžete také použít při hodnocení.\n\n"
-        grade_prompt = f"Měli byste také použít tato dodatečná kritéria při hodnocení odpovědi:\n\n{criteria}\n\nMožné známky jsou: výborně, dobře, špatně."
+        grade_prompt = f"Měli byste také použít tato dodatečná kritéria při hodnocení odpovědi:\n\n{criteria}\n\nMožné známky jsou: výborně, dobře, špatně. Tvoje odpověď by měla být pouze známka."
 
         grade_message = f"Odpověď studenta k hodnocení:\n{answer}"
         if use_feedback:
@@ -198,10 +200,10 @@ def get_feedback_prompt_and_message(
     use_feedback (bool): Whether to use feedback in the evaluation
     """
     if not czech:
-        feedback_prompt = f"You are simulating a teacher's assessment. You are to provide feedback to student's answer to this question:\n\n{question}\n\nYou should also uses these additional criterias when providing feedback:\n\n{criteria}\n\n.The feedback should be provided in the form of a bulleted list.\n\n"
+        feedback_prompt = f"You are simulating a teacher's assessment. You are to provide feedback to student's answer to this question:\n\n{question}\n\nYou should also uses these additional criterias when providing feedback:\n\n{criteria}\n\nThe feedback should be provided in the form of a bulleted list.\n\n"
         feedback_message = f"The student's answer:\n{answer}\n"
     else:
-        feedback_prompt = f"Simulujete hodnocení učitele. Máte poskytnout zpětnou vazbu na odpověď studenta na tuto otázku:\n\n{question}\n\nMěli byste také použít tyto dodatečné kritéria při poskytování zpětné vazby:\n\n{criteria}\n\n.Zpětná vazba by měla být poskytnuta ve formě odrážkového seznamu.\n\n"
+        feedback_prompt = f"Simulujete hodnocení učitele. Máte poskytnout zpětnou vazbu na odpověď studenta na tuto otázku:\n\n{question}\n\nMěli byste také použít tyto dodatečné kritéria při poskytování zpětné vazby:\n\n{criteria}\n\nZpětná vazba by měla být poskytnuta ve formě odrážkového seznamu.\n\n"
         feedback_message = f"Odpověď studenta:\n{answer}\n"
 
     return feedback_prompt, feedback_message
@@ -218,6 +220,7 @@ def get_request_params(
     top_p=1.0,
     frequency_penalty=0.0,
     presence_penalty=0.0,
+    seed=None,
 ) -> RequestParams:
     """
     This function returns the parameters for the request to the OpenAI API for providing feedback
@@ -233,6 +236,7 @@ def get_request_params(
     top_p (float): The nucleus sampling parameter
     frequency_penalty (float): The frequency penalty
     presence_penalty (float): The presence penalty
+    seed (int): The seed for the random number generator
     """
     return RequestParams(
         client=client,
@@ -245,11 +249,12 @@ def get_request_params(
         top_p=top_p,
         frequency_penalty=frequency_penalty,
         presence_penalty=presence_penalty,
+        seed=seed,
     )
 
 
 def evaluate_answer(
-    client, question, criteria, answer, use_feedback=False, czech=False
+    client, question, criteria, answer, provide_feedback=True, use_feedback=False, czech=False
 ) -> None:
     """
     Provides a grade and feedback for a student's answer to a question
@@ -262,29 +267,32 @@ def evaluate_answer(
     """
 
     # Feedback
-    feedback_prompt, feedback_message = get_feedback_prompt_and_message(
-        question, criteria, answer, czech
-    )
+    if provide_feedback:
+        feedback_prompt, feedback_message = get_feedback_prompt_and_message(
+            question, criteria, answer, czech
+        )
 
-    messages = [
-        {"role": "system", "content": feedback_prompt},
-        {"role": "user", "content": feedback_message},
-    ]
+        messages = [
+            {"role": "system", "content": feedback_prompt},
+            {"role": "user", "content": feedback_message},
+        ]
 
-    feedback_params = get_request_params(client, messages=messages)
+        feedback_params = get_request_params(client, messages=messages, seed=15)
 
-    response = chat_completion_request(feedback_params)
-    messages.append(
-        {"role": "assistant", "content": response.choices[0].message.content}
-    )
-    pretty_print_conversation(messages)
+        response = chat_completion_request(feedback_params)
+        messages.append(
+            {"role": "assistant", "content": response.choices[0].message.content}
+        )
+        pretty_print_conversation(messages)
+
+    feedback = response.choices[0].message.content if provide_feedback else None
 
     # Grade
     grade_prompt, grade_message = get_grade_prompt_and_message(
         answer,
         question,
         criteria,
-        response.choices[0].message.content,
+        feedback,
         use_feedback,
         czech,
     )
@@ -294,7 +302,7 @@ def evaluate_answer(
         {"role": "user", "content": grade_message},
     ]
 
-    grade_params = get_request_params(client, messages=messages)
+    grade_params = get_request_params(client, messages=messages, temperature=0.0, seed=15)
 
     response = chat_completion_request(grade_params)
     messages.append(
@@ -315,6 +323,12 @@ def main():
         help="Type of input: file or console. Default is file",
     )
     parser.add_argument(
+        "-f",
+        "--feedback",
+        action="store_true",
+        help="Optional argument to specify if feedback should be provided.",
+    )
+    parser.add_argument(
         "-t",
         "--type",
         action="store_true",
@@ -328,6 +342,12 @@ def main():
     )
 
     args = parser.parse_args()
+
+    if not args.feedback and args.type:
+        print(
+            "Feedback is required when using the type argument. Please provide feedback."
+        )
+        return
 
     client = openai.Client(api_key=API_KEY)
 
@@ -347,7 +367,7 @@ def main():
         criteria = read_criteria()
         answer = read_answer()
 
-    evaluate_answer(client, question, criteria, answer, args.type, args.czech)
+    evaluate_answer(client, question, criteria, answer, args.feedback, args.type, args.czech)
 
 
 if __name__ == "__main__":
