@@ -1,6 +1,6 @@
 # Evaluation of open-ended questions
 
-This project uses OpenAI's GPT model to evaluate open-ended questions. It provides a grade and feedback for a student's answer to a question.
+This project uses OpenAI's GPT model to evaluate open-ended questions. It provides a grade (excellent/výborné, good/dobré, poor/špatné) and feedback for a student's answer to a question.
 
 ## Prerequisites
 
