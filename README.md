@@ -5,6 +5,7 @@ This project uses OpenAI's GPT model to evaluate open-ended questions. It provid
 ## Prerequisites
 
 - Python 3.x
+- numpy
 - openai
 - configparser
 - tenacity
@@ -16,7 +17,7 @@ This project uses OpenAI's GPT model to evaluate open-ended questions. It provid
 2. Install the required Python packages
 
 ```sh
-pip install openai configparser tenacity termcolor
+pip install openai configparser tenacity termcolor numpy
 ```
 
 3. Create a config.ini file in the src directory with your OpenAI API key and GPT model. The .gitignore file is already set up to ignore this file.
@@ -35,7 +36,7 @@ You can run the program from the command line with the following command:
 python src/evaluation.py
 ```
 
-You can use -i or --input to enable input from console (for now default behaviour is to take the first item from data/answers.json); -f or --feedback to specify if feedback should be provided; -t or --type if feedback should be used in grading; -c or --czech if the input is in Czech language.
+You can use -i or --input to enable input from console (for now default behaviour is to take the first item from data/answers.json); -f or --feedback to specify if feedback should be provided; -t or --type if feedback should be used in grading; -c or --czech if the input is in Czech language; -l or --logprobs to show logprobs of the categories.
 
 Example of running the program with feedback, using feedback in grading and in czech:
 

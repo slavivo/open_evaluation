@@ -6,6 +6,7 @@ import json
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 from termcolor import colored
 from typing import Tuple, Dict
+import numpy as np
 
 logging.basicConfig(level=logging.INFO)
 config = configparser.ConfigParser()
@@ -33,6 +34,8 @@ class RequestParams:
         frequency_penalty=0.0,
         presence_penalty=0.0,
         seed=None,
+        logprobs=None,
+        top_logprobs=None,
     ):
         self.client = client
         self.messages = messages
@@ -45,6 +48,8 @@ class RequestParams:
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
         self.seed = seed
+        self.logprobs = logprobs
+        self.top_logprobs = top_logprobs
 
     def get_params(self) -> Dict:
         """
@@ -60,6 +65,9 @@ class RequestParams:
             "top_p": self.top_p,
             "frequency_penalty": self.frequency_penalty,
             "presence_penalty": self.presence_penalty,
+            "seed": self.seed,
+            "logprobs": self.logprobs,
+            "top_logprobs": self.top_logprobs,
         }
 
 
@@ -129,6 +137,33 @@ def pretty_print_conversation(messages) -> None:
             )
 
 
+def print_logprobs(logprobs):
+    '''
+    This function prints the logprobs
+    
+    Parameters:
+    logprobs (list): List of logprobs
+    '''
+
+    categories_probs = []
+    for logprob in logprobs:
+        token = logprob.token.strip().lower()
+        for i, (category, prob) in enumerate(categories_probs):
+            if len(category) > len(token):
+                if (category == token) or (category.startswith(token) and len(token) >= 2):
+                    categories_probs[i] = (category, prob + np.exp(logprob.logprob))
+                    break
+            else:
+                if (category == token) or (token.startswith(category) and len(category) >= 2):
+                    categories_probs[i] = (token, prob + np.exp(logprob.logprob))
+                    break
+        else:
+            categories_probs.append((token, np.exp(logprob.logprob)))
+    
+    for (category, prob) in categories_probs:
+        print(f'Category: {category}, linear probability: {np.round(prob*100,2)}')
+
+
 def read_question() -> str:
     """
     This function reads a question from the user and returns the question
@@ -170,7 +205,7 @@ def get_grade_prompt_and_message(
         grade_prompt = f"You are simulating a teacher's assessment. You will be given answer to this question:\n\n{question}\n\n"
         if use_feedback:
             grade_prompt += "The input may also include feedback from a teacher to the question, which you can also use when grading.\n\n"
-        grade_prompt = f"You should also use these additional criterias when evaluation the answer:\n\n{criteria}\n\nThe possible grades are: excellent, good, poor. Your answer should be just the grade."
+        grade_prompt = f"You should also use these additional criterias when evaluation the answer:\n\n{criteria}\n\nThe possible grades are: excellent, good, poor. Your answer muse be just the grade."
 
         grade_message = f"The student's answer to be evaluated:\n{answer}"
         if use_feedback:
@@ -179,7 +214,7 @@ def get_grade_prompt_and_message(
         grade_prompt = f"Simulujete hodnocení učitele. Budete poskytnuta odpověď na tuto otázku:\n\n{question}\n\n"
         if use_feedback:
             grade_prompt += "Vstup může také zahrnovat zpětnou vazbu od učitele k otázce, kterou můžete také použít při hodnocení.\n\n"
-        grade_prompt = f"Měli byste také použít tato dodatečná kritéria při hodnocení odpovědi:\n\n{criteria}\n\nMožné známky jsou: výborně, dobře, špatně. Tvoje odpověď by měla být pouze známka."
+        grade_prompt = f"Měli byste také použít tato dodatečná kritéria při hodnocení odpovědi:\n\n{criteria}\n\nMožné známky jsou: výborně, dobře, špatně. Tvoje odpověď musí být pouze známka."
 
         grade_message = f"Odpověď studenta k hodnocení:\n{answer}"
         if use_feedback:
@@ -222,6 +257,8 @@ def get_request_params(
     frequency_penalty=0.0,
     presence_penalty=0.0,
     seed=None,
+    logprobs=None,
+    top_logprobs=10,
 ) -> RequestParams:
     """
     This function returns the parameters for the request to the OpenAI API for providing feedback
@@ -238,6 +275,8 @@ def get_request_params(
     frequency_penalty (float): The frequency penalty
     presence_penalty (float): The presence penalty
     seed (int): The seed for the random number generator
+    logprobs (bool): Whether to return logprobs
+    top_logprobs (int): The number of top logprobs to return
     """
     return RequestParams(
         client=client,
@@ -251,11 +290,13 @@ def get_request_params(
         frequency_penalty=frequency_penalty,
         presence_penalty=presence_penalty,
         seed=seed,
+        logprobs=logprobs,
+        top_logprobs=top_logprobs,
     )
 
 
 def evaluate_answer(
-    client, question, criteria, answer, provide_feedback=True, use_feedback=False, czech=False
+    client, question, criteria, answer, provide_feedback=True, use_feedback=False, czech=False, logprobs=False
 ) -> None:
     """
     Provides a grade and feedback for a student's answer to a question
@@ -265,6 +306,10 @@ def evaluate_answer(
     question (str): The question to evaluate
     criteria (str): The criteria to use for evaluation
     answer (str): The student's answer to evaluate
+    provide_feedback (bool): Whether to provide feedback
+    use_feedback (bool): Whether to use feedback in the grading
+    czech (bool): Whether the input is in Czech language
+    logprobs (bool): Whether to print logprobs
     """
 
     # Feedback
@@ -278,7 +323,7 @@ def evaluate_answer(
             {"role": "user", "content": feedback_message},
         ]
 
-        feedback_params = get_request_params(client, messages=messages, seed=15)
+        feedback_params = get_request_params(client, max_tokens=500, messages=messages, seed=15)
 
         response = chat_completion_request(feedback_params)
         messages.append(
@@ -303,13 +348,17 @@ def evaluate_answer(
         {"role": "user", "content": grade_message},
     ]
 
-    grade_params = get_request_params(client, messages=messages, temperature=0.0, seed=15)
+    top_logprobs = 10 if logprobs else None
+    grade_params = get_request_params(client, messages=messages, temperature=0.0, max_tokens=50, logprobs=logprobs, top_logprobs=top_logprobs, seed=15)
 
     response = chat_completion_request(grade_params)
     messages.append(
         {"role": "assistant", "content": response.choices[0].message.content}
     )
+    
     pretty_print_conversation(messages)
+    if logprobs:
+        print_logprobs(response.choices[0].logprobs.content[0].top_logprobs)
 
 
 def main():
@@ -341,6 +390,12 @@ def main():
         action="store_true",
         help="Optional argument to specify if the input is in Czech language.",
     )
+    parser.add_argument(
+        "-l",
+        "--logprobs",
+        action="store_true",
+        help="Optional argument to specify if logprobs should be printed.",
+    )
 
     args = parser.parse_args()
 
@@ -359,7 +414,7 @@ def main():
         with open(input_file, "r") as file:
             data = json.load(file)
             # TODO change to get all questions
-            data = data["data"][6]
+            data = data["data"][2]
             question = data["question"]
             criteria = data["criteria"]
             answer = data["answer"]
@@ -368,7 +423,7 @@ def main():
         criteria = read_criteria()
         answer = read_answer()
 
-    evaluate_answer(client, question, criteria, answer, args.feedback, args.type, args.czech)
+    evaluate_answer(client, question, criteria, answer, args.feedback, args.type, args.czech, args.logprobs)
 
 
 if __name__ == "__main__":
