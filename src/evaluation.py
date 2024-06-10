@@ -138,30 +138,34 @@ def pretty_print_conversation(messages) -> None:
 
 
 def print_logprobs(logprobs):
-    '''
+    """
     This function prints the logprobs
-    
+
     Parameters:
     logprobs (list): List of logprobs
-    '''
+    """
 
     categories_probs = []
     for logprob in logprobs:
         token = logprob.token.strip().lower()
         for i, (category, prob) in enumerate(categories_probs):
             if len(category) > len(token):
-                if (category == token) or (category.startswith(token) and len(token) >= 2):
+                if (category == token) or (
+                    category.startswith(token) and len(token) >= 2
+                ):
                     categories_probs[i] = (category, prob + np.exp(logprob.logprob))
                     break
             else:
-                if (category == token) or (token.startswith(category) and len(category) >= 2):
+                if (category == token) or (
+                    token.startswith(category) and len(category) >= 2
+                ):
                     categories_probs[i] = (token, prob + np.exp(logprob.logprob))
                     break
         else:
             categories_probs.append((token, np.exp(logprob.logprob)))
-    
-    for (category, prob) in categories_probs:
-        print(f'Category: {category}, linear probability: {np.round(prob*100,2)}')
+
+    for category, prob in categories_probs:
+        print(f"Category: {category}, linear probability: {np.round(prob*100,2)}")
 
 
 def read_question() -> str:
@@ -245,58 +249,15 @@ def get_feedback_prompt_and_message(
     return feedback_prompt, feedback_message
 
 
-def get_request_params(
-    client,
-    messages=None,
-    tools=None,
-    tool_choice=None,
-    model=GPT_MODEL,
-    max_tokens=400,
-    temperature=0.7,
-    top_p=1.0,
-    frequency_penalty=0.0,
-    presence_penalty=0.0,
-    seed=None,
-    logprobs=None,
-    top_logprobs=10,
-) -> RequestParams:
-    """
-    This function returns the parameters for the request to the OpenAI API for providing feedback
-
-    Parameters:
-    client (openai.Client): OpenAI API client
-    messages (list): List of messages in the conversation
-    tools (list): List of tools to use in the request
-    tool_choice (str): The tool choice to use in the request
-    model (str): The model to use in the request
-    max_tokens (int): The maximum number of tokens to generate
-    temperature (float): The sampling temperature
-    top_p (float): The nucleus sampling parameter
-    frequency_penalty (float): The frequency penalty
-    presence_penalty (float): The presence penalty
-    seed (int): The seed for the random number generator
-    logprobs (bool): Whether to return logprobs
-    top_logprobs (int): The number of top logprobs to return
-    """
-    return RequestParams(
-        client=client,
-        messages=messages,
-        tools=tools,
-        tool_choice=tool_choice,
-        model=model,
-        max_tokens=max_tokens,
-        temperature=temperature,
-        top_p=top_p,
-        frequency_penalty=frequency_penalty,
-        presence_penalty=presence_penalty,
-        seed=seed,
-        logprobs=logprobs,
-        top_logprobs=top_logprobs,
-    )
-
-
 def evaluate_answer(
-    client, question, criteria, answer, provide_feedback=True, use_feedback=False, czech=False, logprobs=False
+    client,
+    question,
+    criteria,
+    answer,
+    provide_feedback=True,
+    use_feedback=False,
+    czech=False,
+    logprobs=False,
 ) -> None:
     """
     Provides a grade and feedback for a student's answer to a question
@@ -323,7 +284,14 @@ def evaluate_answer(
             {"role": "user", "content": feedback_message},
         ]
 
-        feedback_params = get_request_params(client, max_tokens=500, messages=messages, seed=15)
+        feedback_params = RequestParams(
+            client=client,
+            max_tokens=500,
+            messages=messages,
+            temperature=0.2,
+            top_p=1.0,
+            seed=15
+        )
 
         response = chat_completion_request(feedback_params)
         messages.append(
@@ -349,13 +317,21 @@ def evaluate_answer(
     ]
 
     top_logprobs = 10 if logprobs else None
-    grade_params = get_request_params(client, messages=messages, temperature=0.0, max_tokens=50, logprobs=logprobs, top_logprobs=top_logprobs, seed=15)
+    grade_params = RequestParams(
+        client=client,
+        messages=messages,
+        temperature=0.0,
+        max_tokens=50,
+        logprobs=logprobs,
+        top_logprobs=top_logprobs,
+        seed=15,
+    )
 
     response = chat_completion_request(grade_params)
     messages.append(
         {"role": "assistant", "content": response.choices[0].message.content}
     )
-    
+
     pretty_print_conversation(messages)
     if logprobs:
         print_logprobs(response.choices[0].logprobs.content[0].top_logprobs)
@@ -423,7 +399,16 @@ def main():
         criteria = read_criteria()
         answer = read_answer()
 
-    evaluate_answer(client, question, criteria, answer, args.feedback, args.type, args.czech, args.logprobs)
+    evaluate_answer(
+        client,
+        question,
+        criteria,
+        answer,
+        args.feedback,
+        args.type,
+        args.czech,
+        args.logprobs,
+    )
 
 
 if __name__ == "__main__":
