@@ -1,0 +1,53 @@
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+system: Tvým úkolem je vytvořit otázky typu kdo, co, kdy, kde, proč a jak s více volbami, které identifikují informace, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl.
+
+user: Text: Neuronová síť je program nebo model strojového učení, který se rozhoduje podobně jako lidský mozek pomocí procesů, které napodobují způsob, jakým biologické neurony spolupracují při identifikaci jevů, zvažování možností a vyvozování závěrů.
+
+Každá neuronová síť se skládá z vrstev uzlů neboli umělých neuronů - vstupní vrstvy, jedné nebo více skrytých vrstev a výstupní vrstvy. Každý uzel se připojuje k ostatním a má svou vlastní přiřazenou váhu a práh. Pokud je výstup některého jednotlivého uzlu vyšší než zadaná prahová hodnota, tento uzel se aktivuje a odešle data do další vrstvy sítě. V opačném případě nejsou další vrstvě sítě předána žádná data.
+Neuronové sítě se učí na základě trénovacích dat a postupem času zlepšují svou přesnost. Jakmile jsou vyladěny na přesnost, jsou mocným nástrojem v informatice a umělé inteligenci, který nám umožňuje klasifikovat a shlukovat data vysokou rychlostí. Úlohy v oblasti rozpoznávání řeči nebo rozpoznávání obrazu mohou trvat minuty oproti hodinám ve srovnání s ruční identifikací prováděnou lidskými experty. Jedním z nejznámějších příkladů neuronové sítě je vyhledávací algoritmus společnosti Google.
+
+Neuronové sítě se někdy nazývají umělé neuronové sítě (ANN) nebo simulované neuronové sítě (SNN). Jsou podmnožinou strojového učení a tvoří jádro modelů hlubokého učení.
+
+
+assistant: 1. **Kdo**:
+   Kdo se rozhoduje podobně jako lidský mozek pomocí procesů, které napodobují způsob, jakým biologické neurony spolupracují?
+   - a) Tradiční algoritmy
+   - b) Neuronová síť
+   - c) Lidský expert
+   - d) Vyhledávací algoritmus společnosti Google
+
+2. **Co**:
+   Co tvoří jádro modelů hlubokého učení?
+   - a) Tradiční algoritmy
+   - b) Neuronové sítě
+   - c) Lidské mozky
+   - d) Ruční identifikace
+
+3. **Kdy**:
+   Kdy se neuronové sítě stávají mocným nástrojem v informatice a umělé inteligenci?
+   - a) Jakmile jsou vyladěny na přesnost
+   - b) Při jejich prvním spuštění
+   - c) Po prvním trénování
+   - d) Když jsou deaktivovány
+
+4. **Kde**:
+   Kde se data posílají, pokud je výstup některého jednotlivého uzlu vyšší než zadaná prahová hodnota?
+   - a) Do vstupní vrstvy
+   - b) Do další vrstvy sítě
+   - c) Do lidského mozku
+   - d) Do vyhledávacího algoritmu společnosti Google
+
+5. **Proč**:
+   Proč jsou neuronové sítě užitečné v úlohách rozpoznávání řeči nebo obrazu?
+   - a) Protože trvají déle než ruční identifikace
+   - b) Protože mohou klasifikovat a shlukovat data vysokou rychlostí
+   - c) Protože nejsou přesné
+   - d) Protože jsou složité na implementaci
+
+6. **Jak**:
+   Jak se neuronové sítě učí a zlepšují svou přesnost?
+   - a) Pouze na základě teoretických modelů
+   - b) Na základě trénovacích dat a postupem času
+   - c) Pouze ručním nastavením
+   - d) Automaticky bez potřeby trénování
+

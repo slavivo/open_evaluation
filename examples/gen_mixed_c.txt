@@ -1,0 +1,32 @@
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+system: Tvým úkolem je vytvořit směs různých typů otevřených otázek nebo otázek s více odpovědi (ano-ne, alternativní, pravda-nepravda, kdo, co, kdy, kde, proč, jak, s více volbami, vyplňování mezery) k identifikaci informací, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl a neměli by obsahovat odpověď.
+
+user: Text: Neuronová síť je program nebo model strojového učení, který se rozhoduje podobně jako lidský mozek pomocí procesů, které napodobují způsob, jakým biologické neurony spolupracují při identifikaci jevů, zvažování možností a vyvozování závěrů.
+
+Každá neuronová síť se skládá z vrstev uzlů neboli umělých neuronů - vstupní vrstvy, jedné nebo více skrytých vrstev a výstupní vrstvy. Každý uzel se připojuje k ostatním a má svou vlastní přiřazenou váhu a práh. Pokud je výstup některého jednotlivého uzlu vyšší než zadaná prahová hodnota, tento uzel se aktivuje a odešle data do další vrstvy sítě. V opačném případě nejsou další vrstvě sítě předána žádná data.
+Neuronové sítě se učí na základě trénovacích dat a postupem času zlepšují svou přesnost. Jakmile jsou vyladěny na přesnost, jsou mocným nástrojem v informatice a umělé inteligenci, který nám umožňuje klasifikovat a shlukovat data vysokou rychlostí. Úlohy v oblasti rozpoznávání řeči nebo rozpoznávání obrazu mohou trvat minuty oproti hodinám ve srovnání s ruční identifikací prováděnou lidskými experty. Jedním z nejznámějších příkladů neuronové sítě je vyhledávací algoritmus společnosti Google.
+
+Neuronové sítě se někdy nazývají umělé neuronové sítě (ANN) nebo simulované neuronové sítě (SNN). Jsou podmnožinou strojového učení a tvoří jádro modelů hlubokého učení.
+
+
+assistant: 1. Co je neuronová síť a jak napodobuje lidský mozek?
+2. Které vrstvy tvoří strukturu neuronové sítě?
+3. Jaký je princip aktivace uzlu v neuronové síti?
+4. Jakým způsobem se neuronové sítě zdokonalují?
+5. Proč jsou neuronové sítě považovány za mocný nástroj v informatice a umělé inteligenci?
+6. Jaký je rozdíl mezi neuronovou sítí a ruční identifikací prováděnou lidskými experty?
+7. Který známý vyhledávací algoritmus je příkladem neuronové sítě?
+8. Pravda nebo nepravda: Neuronové sítě se skládají pouze z jedné vrstvy uzlů.
+9. Jaké alternativní názvy se používají pro neuronové sítě?
+10. Jaký je vztah mezi neuronovými sítěmi a hlubokým učením?
+11. Pro jaké úlohy jsou neuronové sítě obzvláště efektivní?
+12. Kde se nachází uzly s přiřazenou váhou a prahem v neuronové síti?
+13. Vyplňte mezeru: Neuronové sítě se učí na základě ________ dat.
+14. Jaký je význam prahové hodnoty v kontextu neuronové sítě?
+15. Kdy se uzel v neuronové síti aktivuje a co se stane následně?
+16. Proč se neuronové sítě někdy nazývají umělé neuronové sítě (ANN) nebo simulované neuronové sítě (SNN)?
+17. Kolik skrytých vrstev může mít neuronová síť?
+18. Jaký je hlavní cíl neuronové sítě při klasifikaci a shlukování dat?
+19. Kde se neuronové sítě využívají pro rozpoznávání řeči nebo obrazu?
+20. Jaké jsou hlavní výhody použití neuronových sítí oproti tradičním metodám?
+

@@ -1,0 +1,49 @@
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+system: Your task is to make who, what, when, where, why, and how multiple choice questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text.
+
+user: Text: 
+A neural network is a machine learning program, or model, that makes decisions in a manner similar to the human brain, by using processes that mimic the way biological neurons work together to identify phenomena, weigh options and arrive at conclusions.
+
+Every neural network consists of layers of nodes, or artificial neurons—an input layer, one or more hidden layers, and an output layer. Each node connects to others, and has its own associated weight and threshold. If the output of any individual node is above the specified threshold value, that node is activated, sending data to the next layer of the network. Otherwise, no data is passed along to the next layer of the network.
+Neural networks rely on training data to learn and improve their accuracy over time. Once they are fine-tuned for accuracy, they are powerful tools in computer science and artificial intelligence, allowing us to classify and cluster data at a high velocity. Tasks in speech recognition or image recognition can take minutes versus hours when compared to the manual identification by human experts. One of the best-known examples of a neural network is Google’s search algorithm.
+
+Neural networks are sometimes called artificial neural networks (ANNs) or simulated neural networks (SNNs). They are a subset of machine learning, and at the heart of deep learning models.
+
+
+
+assistant: 1. Who is one of the best-known users of neural networks?
+   a) Microsoft  
+   b) Google  
+   c) Apple  
+   d) IBM  
+
+2. What is a neural network primarily used for?
+   a) Playing video games  
+   b) Making decisions similar to the human brain  
+   c) Writing novels  
+   d) Cooking food  
+
+3. When does a node in a neural network get activated?
+   a) When its output is below the threshold value  
+   b) When it receives data from the output layer  
+   c) When its output is above the specified threshold value  
+   d) When it is connected to the input layer  
+
+4. Where are neural networks commonly applied?
+   a) In speech recognition or image recognition  
+   b) In manufacturing processes  
+   c) In financial accounting  
+   d) In physical exercise routines  
+
+5. Why do neural networks need training data?
+   a) To maintain their structure  
+   b) To learn and improve their accuracy over time  
+   c) To reduce their size  
+   d) To change their input layer  
+
+6. How do neural networks compare to human experts in terms of task completion time for speech or image recognition?
+   a) They take more time  
+   b) They take the same amount of time  
+   c) They take minutes versus hours  
+   d) They are unable to perform these tasks
+

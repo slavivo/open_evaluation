@@ -1,6 +1,9 @@
-# Evaluation of open-ended questions
+# Project
 
-This project uses OpenAI's GPT model to evaluate open-ended questions. It provides a grade (excellent/výborně, good/dobře, poor/špatně) and feedback for a student's answer to a question.
+This project uses OpenAI's GPT model for two tasks.
+
+1. Evaluating open-ended questions. It provides a grade (excellent/výborně, good/dobře, poor/špatně) and feedback for a student's answer to a question.
+2. Generating questions. Based on the input text it generates various types of questions that test the reader's complete understanding of the text.
 
 ## Prerequisites
 
@@ -24,13 +27,13 @@ pip install openai configparser tenacity termcolor numpy
 
 ```ini
 [DEFAULT]
-OPENAI_API_KEY = your_openai_api_key
+OPENAI_KEY = your_openai_api_key
 GPT_MODEL = your_gpt_model
 ```
 
-## Running the program 
+## Running evaluation
 
-You can run the program from the command line with the following command:
+You can run the evaluation script from the command line with the following command:
 
 ```sh
 python src/evaluation.py
@@ -44,11 +47,7 @@ Example of running the program with feedback, using feedback in grading and in c
 python src/evaluation.py -f -t -c
 ```
 
-## Output examples
-
-Note that the actual format of the output is different in the console.
-
-### Example 1:
+### Output example
 
 **Question:**
 Explain what a neuron is, detailing how they transmit information and what unique features they have.
@@ -68,48 +67,7 @@ Neurons are cells that transmit information to other nerve, muscle, or gland cel
 **Grade:**
 poor
 
-### Example 2:
-
-**Question:**
-What are the components and structure of a molecule of DNA?
-
-**Criteria:**
-Mention base pairs, sugar, and phosphate. Describe that DNA is a double helix. Note that base pairs pair up in a specific way using hydrogen bond (AT and GC).
-
-**Answer:**
-DNA is a complex molecule and it is shaped like a double helix ladder, where the rungs are base pairs ATGC and the scaffold is sugars and phosphates. The base pairs bind (A with G) and (C with T) using hydrogen bonds, which can be separated when the DNA is being read or duplicated.
-
-**Feedback:**
-- You have correctly identified that DNA is a complex molecule with a double helix structure. Well done!
-- Good job in mentioning the base pairs (AT and GC), as well as the sugar and phosphate that form the backbone of the DNA molecule.
-- However, there is an error in the pairs you've mentioned. Adenine (A) pairs with Thymine (T) and Guanine (G) pairs with Cytosine (C), not the other way around. This is a key component of DNA structure and it's important to remember this.
-- You've correctly noted that the base pairs are held together by hydrogen bonds. This is a crucial aspect of DNA's structure and function, and it's good to see.
-
-**Grade:**
-poor
-
-### Example 3:
-
-**Question:**
-How can large language models introduce biases into student evaluation?
-
-**Criteria:**
-None provided
-
-**Answer:**
-LLMs have bias because their training data can have toxic, biased, or inaccurate data in it. When evaluating students, LLMs could also penalize students that know information that is more recent or otherwise outside the LLM’s training set, which may appear to be inaccurate to the AI model. LLMs are also not designed to keep track of accurate information; they are autoregressive language models, and so they do not have a legitimate hold on fact and caution should be used when depending on an AI model for subtle communication.
-
-**Feedback:**
-- You've correctly pointed out that biases in large language models (LLMs) can come from their training data. If the data used to train these models has inherent biases, toxic content, or inaccuracies, these issues can be reflected in the model's output.
-- You've also made a good point about the limitations of LLMs in evaluating information outside their training set. This could indeed lead to the penalization of students who provide answers based on more recent information or knowledge that the model isn't familiar with.
-- Your understanding of LLMs as autoregressive language models is accurate. They generate predictions based on past inputs and do not have a reliable mechanism for fact-checking or discerning the truth value of the information they generate.
-
-**Grade:**
-excellent
-
-## Output examples in Czech
-
-### Příklad 1:
+### Output example in Czech
 
 **Otázka:**
 Vysvětlete, co je to neuron, jak přenáší informace a jaké má jedinečné vlastnosti.
@@ -128,52 +86,66 @@ Neurony jsou buňky, které předávají informace jiným nervovým, svalovým n
 **Hodnocení:**
 špatně
 
-### Příklad 2:
+## Running generation
 
-**Otázka:**
-Jaké jsou složky a struktura molekuly DNA?
+You can run the generation script from the command line with the following command:
 
-**Kritéria:**
-Uveďte páry bází, cukr a fosfát. Popište, že DNA je dvojitá šroubovice. Všimněte si, že páry bází se párují specifickým způsobem pomocí vodíkové vazby (AT a GC).
+```sh
+python src/generation.py -m mixed
+```
 
-**Odpověď:**
-DNA je složitá molekula a má tvar dvojitého šroubovicového žebříku, kde příčky tvoří páry bází ATGC a lešení tvoří cukry a fosfáty. Páry bází se spojují (A s G) a (C s T) pomocí vodíkových vazeb, které se mohou při čtení nebo duplikaci DNA oddělit.
+You can use -c or --czech to specify if the input text is in Czech language; -f or --file to specify path for file that contains input text and -m or --mode to specify the type of questions generated (yn - yes/no, alt - alternative, tf - true/false, wh - who/what/where/when/why/how, whmc - same as before but multi-choice, cloze - fill-in-the-blank, clozemc - same as before but multi-choice, mixed - all the above).
 
-**Zpětná vazba:**
+Example of running the program with input text in Czech from a file and generating yes/no questions:
 
-Děkuji za vaši odpověď. Zde je několik bodů, které bych chtěl zdůraznit:
+```sh
+python src/generation.py -c -f data/input_cz.txt -m yn
+```
 
-- Máte správně, že DNA má tvar dvojité šroubovice a je tvořena páry bází, cukrem a fosfátem. To je dobré.
+### Output example
 
-- Při popisu párování bází však došlo k chybě. Adenin (A) se páruje s thymidinem (T) a guanin (G) se páruje s cytosinem (C), nikoli A s G a C s T. Je to klíčový aspekt struktury DNA, takže je důležité si to správně zapamatovat.
+**Input text:**
 
-- Dobře jste si všiml, že páry bází se spojují pomocí vodíkových vazeb a mohou se oddělit během replikace DNA. To je správně a důležité pro pochopení, jak DNA funguje.
+A neural network is a machine learning program, or model, that makes decisions in a manner similar to the human brain, by using processes that mimic the way biological neurons work together to identify phenomena, weigh options and arrive at conclusions.
 
-**Hodnocení:**
-špatně
+Every neural network consists of layers of nodes, or artificial neurons—an input layer, one or more hidden layers, and an output layer. Each node connects to others, and has its own associated weight and threshold. If the output of any individual node is above the specified threshold value, that node is activated, sending data to the next layer of the network. Otherwise, no data is passed along to the next layer of the network.
+Neural networks rely on training data to learn and improve their accuracy over time. Once they are fine-tuned for accuracy, they are powerful tools in computer science and artificial intelligence, allowing us to classify and cluster data at a high velocity. Tasks in speech recognition or image recognition can take minutes versus hours when compared to the manual identification by human experts. One of the best-known examples of a neural network is Google’s search algorithm.
 
-### Příklad 3:
+Neural networks are sometimes called artificial neural networks (ANNs) or simulated neural networks (SNNs). They are a subset of machine learning, and at the heart of deep learning models.
 
-**Otázka:**
-Jak mohou velké jazykové modely vnášet do hodnocení studentů zkreslení?
+**Generated wh questions:**
+1. Who utilizes neural networks to improve accuracy and efficiency in tasks such as speech and image recognition?
+2. What are the main components of a neural network?
+3. When does a node in a neural network get activated?
+4. Where can neural networks be applied to significantly reduce the time required for data classification and clustering?
+5. Why are neural networks considered powerful tools in computer science and artificial intelligence?
+6. How do neural networks mimic the decision-making process of the human brain?
 
-**Kritéria:**
-Nebylo zadáno
+### Output example in Czech
 
-**Odpověď:**
-Modely LLM mají zkreslení, protože jejich trénovací data mohou obsahovat toxická, zkreslená nebo nepřesná data. Při hodnocení studentů by LLM mohly penalizovat i studenty, kteří znají informace, které jsou novější nebo jinak mimo tréninkovou množinu LLM, což se modelu umělé inteligence může jevit jako nepřesné. LLM také nejsou určeny k tomu, aby sledovaly přesné informace; jsou to autoregresivní jazykové modely, a proto nemají legitimní držení faktů a při závislosti na modelu UI pro jemnou komunikaci je třeba postupovat obezřetně.
+**Vstupní text:**
+Neuronová síť je program nebo model strojového učení, který se rozhoduje podobně jako lidský mozek pomocí procesů, které napodobují způsob, jakým biologické neurony spolupracují při identifikaci jevů, zvažování možností a vyvozování závěrů.
 
-**Zpětná vazba:**
+Každá neuronová síť se skládá z vrstev uzlů neboli umělých neuronů - vstupní vrstvy, jedné nebo více skrytých vrstev a výstupní vrstvy. Každý uzel se připojuje k ostatním a má svou vlastní přiřazenou váhu a práh. Pokud je výstup některého jednotlivého uzlu vyšší než zadaná prahová hodnota, tento uzel se aktivuje a odešle data do další vrstvy sítě. V opačném případě nejsou další vrstvě sítě předána žádná data.
+Neuronové sítě se učí na základě trénovacích dat a postupem času zlepšují svou přesnost. Jakmile jsou vyladěny na přesnost, jsou mocným nástrojem v informatice a umělé inteligenci, který nám umožňuje klasifikovat a shlukovat data vysokou rychlostí. Úlohy v oblasti rozpoznávání řeči nebo rozpoznávání obrazu mohou trvat minuty oproti hodinám ve srovnání s ruční identifikací prováděnou lidskými experty. Jedním z nejznámějších příkladů neuronové sítě je vyhledávací algoritmus společnosti Google.
 
-- Pozitivní: Váš výklad, jak mohou velké jazykové modely (LLM) vnášet zkreslení do hodnocení studentů, je jasný a přesný. Máte pravdu, že toxická, zkreslená nebo nepřesná data v trénovacích datech LLM mohou vést k nespravedlivému hodnocení.
+Neuronové sítě se někdy nazývají umělé neuronové sítě (ANN) nebo simulované neuronové sítě (SNN). Jsou podmnožinou strojového učení a tvoří jádro modelů hlubokého učení.
 
-- Pozitivní: Dobře jste identifikoval, jak může LLM penalizovat studenty, kteří znají informace mimo tréninkovou množinu LLM. 
+**Generované otázky:**
+1. Co je neuronová síť a jak napodobuje lidský mozek?
+2. Z jakých vrstev se skládá každá neuronová síť?
+3. Jak se rozhoduje, zda uzel v neuronové síti aktivuje a odešle data do další vrstvy?
+4. Jakým způsobem se neuronové sítě učí a zlepšují svou přesnost?
+5. Jaké jsou výhody použití neuronových sítí ve srovnání s ruční identifikací prováděnou lidskými experty?
+6. Uveďte příklad aplikace neuronové sítě v reálném světě.
+7. Pravda nebo nepravda: Neuronové sítě jsou synonymem pro strojové učení.
+8. Jaký je rozdíl mezi neuronovou sítí a hlubokým učením?
+9. Co znamenají zkratky ANN a SNN?
+10. Kterou společností je známý vyhledávací algoritmus, který využívá neuronové sítě?
+11. Kdy se uzel v neuronové síti neaktivuje?
+12. Jaké typy úloh mohou neuronové sítě řešit?
+13. Vyplňte mezeru: Neuronové sítě se učí na základě __________ dat.
+14. Kde se neuronové sítě nacházejí v rámci strojového učení?
+15. Proč jsou neuronové sítě považovány za mocný nástroj v informatice a umělé inteligenci?
 
-- Pozitivní: Výborně jste si uvědomil, že LLM nejsou určeny k sledování přesných informací a nemají legitimní držení faktů. 
-
-- K zlepšení: V budoucnu byste mohl poskytnout více konkrétních příkladů nebo scénářů, jak by mohlo dojít ke zkreslení hodnocení studentů. 
-
-- K zlepšení: Můžete také diskutovat o možných řešeních nebo strategiích pro minimalizaci těchto zkreslení, aby byla vaše odpověď kompletnější.
-
-**Hodnocení:**
-dobře
+For more examples, see the examples directory.

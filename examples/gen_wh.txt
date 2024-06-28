@@ -1,0 +1,20 @@
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+system: Your task is to make who, what, when, where, why, and how open-ended questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text.
+
+user: Text: 
+A neural network is a machine learning program, or model, that makes decisions in a manner similar to the human brain, by using processes that mimic the way biological neurons work together to identify phenomena, weigh options and arrive at conclusions.
+
+Every neural network consists of layers of nodes, or artificial neurons—an input layer, one or more hidden layers, and an output layer. Each node connects to others, and has its own associated weight and threshold. If the output of any individual node is above the specified threshold value, that node is activated, sending data to the next layer of the network. Otherwise, no data is passed along to the next layer of the network.
+Neural networks rely on training data to learn and improve their accuracy over time. Once they are fine-tuned for accuracy, they are powerful tools in computer science and artificial intelligence, allowing us to classify and cluster data at a high velocity. Tasks in speech recognition or image recognition can take minutes versus hours when compared to the manual identification by human experts. One of the best-known examples of a neural network is Google’s search algorithm.
+
+Neural networks are sometimes called artificial neural networks (ANNs) or simulated neural networks (SNNs). They are a subset of machine learning, and at the heart of deep learning models.
+
+
+
+assistant: 1. Who utilizes neural networks to improve their accuracy over time?
+2. What are the three main layers of nodes in a neural network?
+3. When is a node in a neural network activated?
+4. Where can neural networks be applied to significantly reduce the time taken for tasks?
+5. Why are neural networks considered powerful tools in computer science and artificial intelligence?
+6. How do neural networks mimic the decision-making process of the human brain?
+

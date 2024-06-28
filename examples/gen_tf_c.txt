@@ -1,0 +1,27 @@
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+system: Tvým úkolem je vytvořit otázky pravda-nepravda k identifikaci informací, které jsou explicitně uvedeny v daném textu. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl.
+
+user: Text: Neuronová síť je program nebo model strojového učení, který se rozhoduje podobně jako lidský mozek pomocí procesů, které napodobují způsob, jakým biologické neurony spolupracují při identifikaci jevů, zvažování možností a vyvozování závěrů.
+
+Každá neuronová síť se skládá z vrstev uzlů neboli umělých neuronů - vstupní vrstvy, jedné nebo více skrytých vrstev a výstupní vrstvy. Každý uzel se připojuje k ostatním a má svou vlastní přiřazenou váhu a práh. Pokud je výstup některého jednotlivého uzlu vyšší než zadaná prahová hodnota, tento uzel se aktivuje a odešle data do další vrstvy sítě. V opačném případě nejsou další vrstvě sítě předána žádná data.
+Neuronové sítě se učí na základě trénovacích dat a postupem času zlepšují svou přesnost. Jakmile jsou vyladěny na přesnost, jsou mocným nástrojem v informatice a umělé inteligenci, který nám umožňuje klasifikovat a shlukovat data vysokou rychlostí. Úlohy v oblasti rozpoznávání řeči nebo rozpoznávání obrazu mohou trvat minuty oproti hodinám ve srovnání s ruční identifikací prováděnou lidskými experty. Jedním z nejznámějších příkladů neuronové sítě je vyhledávací algoritmus společnosti Google.
+
+Neuronové sítě se někdy nazývají umělé neuronové sítě (ANN) nebo simulované neuronové sítě (SNN). Jsou podmnožinou strojového učení a tvoří jádro modelů hlubokého učení.
+
+
+assistant: 1. Neuronová síť se rozhoduje podobně jako lidský mozek pomocí procesů, které napodobují biologické neurony. Pravda/Nepravda?
+
+2. Každá neuronová síť se skládá z jedné vrstvy uzlů neboli umělých neuronů. Pravda/Nepravda?
+
+3. Pokud je výstup některého jednotlivého uzlu vyšší než zadaná prahová hodnota, tento uzel se aktivuje a odešle data do další vrstvy sítě. Pravda/Nepravda?
+
+4. Neuronové sítě se nemohou učit na základě trénovacích dat. Pravda/Nepravda?
+
+5. Úlohy v oblasti rozpoznávání řeči nebo rozpoznávání obrazu mohou trvat minuty oproti hodinám ve srovnání s ruční identifikací prováděnou lidskými experty. Pravda/Nepravda?
+
+6. Vyhledávací algoritmus společnosti Google je příkladem neuronové sítě. Pravda/Nepravda?
+
+7. Neuronové sítě jsou někdy nazývány umělé neuronové sítě (ANN) nebo simulované neuronové sítě (SNN). Pravda/Nepravda?
+
+8. Neuronové sítě nejsou podmnožinou strojového učení. Pravda/Nepravda?
+

@@ -9,9 +9,6 @@ import openai
 import json
 import asyncio
 from utils import (
-    read_question,
-    read_criteria,
-    read_answer,
     get_grade_prompt_and_message,
     get_feedback_prompt_and_message,
     pretty_print_conversation,
@@ -43,7 +40,7 @@ async def evaluate_answer(
     Provides a grade and feedback for a student's answer to a question
 
     Parameters:
-    client (openai.Client): OpenAI API client
+    client (openai.AsyncClient): OpenAI API client
     question (str): The question to evaluate
     criteria (str): The criteria to use for evaluation
     answer (str): The student's answer to evaluate
@@ -175,9 +172,8 @@ async def main():
             criteria = data["criteria"]
             answer = data["answer"]
     else:
-        question = read_question()
-        criteria = read_criteria()
-        answer = read_answer()
+        question = input("Ask a question: ")
+        criteria = input("Enter the criteria: ")
 
     await evaluate_answer(
         client,

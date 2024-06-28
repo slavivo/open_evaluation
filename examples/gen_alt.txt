@@ -1,0 +1,24 @@
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+system: Your task is to make alternative questions (has two options to choose from) of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text.
+
+user: Text: 
+A neural network is a machine learning program, or model, that makes decisions in a manner similar to the human brain, by using processes that mimic the way biological neurons work together to identify phenomena, weigh options and arrive at conclusions.
+
+Every neural network consists of layers of nodes, or artificial neurons—an input layer, one or more hidden layers, and an output layer. Each node connects to others, and has its own associated weight and threshold. If the output of any individual node is above the specified threshold value, that node is activated, sending data to the next layer of the network. Otherwise, no data is passed along to the next layer of the network.
+Neural networks rely on training data to learn and improve their accuracy over time. Once they are fine-tuned for accuracy, they are powerful tools in computer science and artificial intelligence, allowing us to classify and cluster data at a high velocity. Tasks in speech recognition or image recognition can take minutes versus hours when compared to the manual identification by human experts. One of the best-known examples of a neural network is Google’s search algorithm.
+
+Neural networks are sometimes called artificial neural networks (ANNs) or simulated neural networks (SNNs). They are a subset of machine learning, and at the heart of deep learning models.
+
+
+
+assistant: 1. Does a neural network mimic the decision-making process of the human brain, or does it replicate the functions of the human heart?
+2. Are the nodes within a neural network also known as artificial neurons, or are they referred to as artificial synapses?
+3. Is the sequence of layers in a neural network composed of an input layer, one or more hidden layers, and an output layer, or does it consist of an input layer, a processing layer, and an output layer?
+4. Do neural networks rely on training data to learn and improve their accuracy over time, or do they depend on pre-programmed rules to function effectively?
+5. If a node's output is above the specified threshold value, does it send data to the next layer of the network, or does it reset and start the process over?
+6. Can tasks like speech recognition or image recognition be performed in minutes using neural networks, or do they typically take hours even with neural networks?
+7. Is Google’s search algorithm an example of a neural network, or is it an example of a genetic algorithm?
+8. Are neural networks a subset of machine learning, or are they a subset of quantum computing?
+9. Are neural networks at the heart of deep learning models, or are they primarily used in traditional programming models?
+10. Are neural networks sometimes called artificial neural networks (ANNs) or simulated neural networks (SNNs), or are they also known as biological neural networks (BNNs)?
+

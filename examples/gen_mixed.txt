@@ -1,0 +1,30 @@
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+system: Your task is to make a mix of different types of open-ended or multple-choice questions (yes-no, alternative, true-false, who, what, when, where, why, how, multiple choice, fill-in-the-blank) of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text and shouldn't include the answer.
+
+user: Text: 
+A neural network is a machine learning program, or model, that makes decisions in a manner similar to the human brain, by using processes that mimic the way biological neurons work together to identify phenomena, weigh options and arrive at conclusions.
+
+Every neural network consists of layers of nodes, or artificial neurons—an input layer, one or more hidden layers, and an output layer. Each node connects to others, and has its own associated weight and threshold. If the output of any individual node is above the specified threshold value, that node is activated, sending data to the next layer of the network. Otherwise, no data is passed along to the next layer of the network.
+Neural networks rely on training data to learn and improve their accuracy over time. Once they are fine-tuned for accuracy, they are powerful tools in computer science and artificial intelligence, allowing us to classify and cluster data at a high velocity. Tasks in speech recognition or image recognition can take minutes versus hours when compared to the manual identification by human experts. One of the best-known examples of a neural network is Google’s search algorithm.
+
+Neural networks are sometimes called artificial neural networks (ANNs) or simulated neural networks (SNNs). They are a subset of machine learning, and at the heart of deep learning models.
+
+
+
+assistant: 1. What is a neural network?
+2. How does a neural network make decisions?
+3. What are the components of a neural network?
+4. True or False: Every neural network consists of only one hidden layer.
+5. Fill in the blank: Each node in a neural network has its own associated ______ and ______.
+6. What happens if the output of an individual node is above the specified threshold value?
+7. Why do neural networks rely on training data?
+8. What are some tasks that neural networks can perform more quickly than human experts?
+9. Which well-known example of a neural network is mentioned in the text?
+10. What are other names for neural networks?
+11. Are neural networks a subset of machine learning or deep learning?
+12. Multiple Choice: Neural networks are powerful tools in:
+   a) Computer science
+   b) Artificial intelligence
+   c) Both a and b
+   d) Neither a nor b
+
