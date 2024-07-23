@@ -1,0 +1,8 @@
+  curl -X POST "http://localhost:8000/generate/" \
+-H "accept: application/json" \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer Hc4c2W30XIjo2Wpw-VN86Xk8VVNYa0PIFD_oTNShyDM" \
+-d '{
+      "text": "Machine learning is a discipline of IT that focuses on enabling the machine to learn complex tasks. The uses are numerous: chatbots, car plate control, automatic disagnostics and more. The prerequisites to understand the various ML methods is a basic expertise of programming, statistic, math (especially linear algebra).",
+      "mode": "mixed"
+    }'

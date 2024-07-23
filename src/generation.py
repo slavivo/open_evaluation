@@ -25,15 +25,10 @@ OPENAI_KEY = config["DEFAULT"]["OPENAI_KEY"]
 GPT_MODEL = config["DEFAULT"]["GPT_MODEL"]
 
 
-async def generate_question(
+async def generate_questions(
     client,
     text,
     mode="mixed",
-    max_tokens=1000,
-    temperature=0.5,
-    top_p=1.0,
-    frequency_penalty=0.0,
-    presence_penalty=0.0,
     czech=False,
 ) -> None:
     """
@@ -43,11 +38,6 @@ async def generate_question(
     client (openai.AsyncClient): OpenAI API client
     mode (str): The mode for generating the question
     text (str): The text to generate a question for
-    max_tokens (int): The maximum number of tokens to generate
-    temperature (float): The temperature for sampling
-    top_p (float): The nucleus sampling probability
-    frequency_penalty (float): The frequency penalty
-    presence_penalty (float): The presence penalty
     czech (bool): Whether the input is in Czech language
     """
 
@@ -60,13 +50,13 @@ async def generate_question(
 
     gen_params = RequestParams(
         client=client,
-        max_tokens=max_tokens,
+        max_tokens=3000,
         messages=messages,
-        temperature=temperature,
-        top_p=top_p,
+        temperature=0.5,
+        top_p=1.0,
         seed=15,
-        frequency_penalty=frequency_penalty,
-        presence_penalty=presence_penalty,
+        frequency_penalty=0.0,
+        presence_penalty=0.0,
     )
 
     response = await chat_completion_request(gen_params)
@@ -114,7 +104,7 @@ async def main():
         with open(args.file, "r") as file:
             text = file.read()
 
-    await generate_question(client, text, czech=args.czech, mode=args.mode)
+    await generate_questions(client, text, czech=args.czech, mode=args.mode)
 
 
 if __name__ == "__main__":

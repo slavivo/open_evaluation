@@ -20,6 +20,14 @@ class EvaluationRequest(BaseModel):
     czech: Optional[bool] = False
     logprobs: Optional[bool] = False
 
+class GenerationRequest(BaseModel):
+    """
+    This class defines the parameters for the generation request
+    """
+    text: str
+    mode: Optional[str] = "mixed"
+    czech: Optional[bool] = False
+
 
 class RequestParams:
     """

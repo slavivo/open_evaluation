@@ -15,7 +15,9 @@ from utils import (
     get_grade_prompt_and_message,
     chat_completion_request,
     RequestParams,
-    EvaluationRequest
+    EvaluationRequest,
+    GenerationRequest,
+    get_generation_prompt_and_message,
 )
 
 # Set up logging
@@ -33,6 +35,34 @@ client = openai.AsyncClient(api_key=OPENAI_KEY)
 
 app = FastAPI()
 security = HTTPBearer()
+
+async def generate_questions(
+    client,
+    text,
+    mode="mixed",
+    czech=False,
+) -> None:
+    gen_prompt, gen_message = get_generation_prompt_and_message(text, mode, czech)
+
+    messages = [
+        {"role": "system", "content": gen_prompt},
+        {"role": "user", "content": gen_message},
+    ]
+
+    gen_params = RequestParams(
+        client=client,
+        max_tokens=3000,
+        messages=messages,
+        temperature=0.5,
+        top_p=1.0,
+        seed=15,
+        frequency_penalty=0.0,
+        presence_penalty=0.0,
+    )
+
+    response = await chat_completion_request(gen_params)
+    return {"question": response.choices[0].message.content}
+
 
 async def evaluate_answer(
     client,
@@ -116,6 +146,15 @@ def get_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
     if credentials.credentials != API_KEY:
         raise HTTPException(status_code=403, detail="Invalid or missing API key")
     return credentials.credentials
+
+@app.post("/generate")
+@app.post("/generate/")
+async def generate(request: GenerationRequest, api_key: str = Depends(get_api_key)):
+    try:
+        result = await generate_questions(client, request.text, request.mode, request.czech)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/evaluate")
 @app.post("/evaluate/")
