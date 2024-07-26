@@ -94,12 +94,18 @@ You can run the generation script from the command line with the following comma
 python src/generation.py -m mixed
 ```
 
-You can use -c or --czech to specify if the input text is in Czech language; -f or --file to specify path for file that contains input text and -m or --mode to specify the type of questions generated (yn - yes/no, alt - alternative, tf - true/false, wh - who/what/where/when/why/how, whmc - same as before but multi-choice, cloze - fill-in-the-blank, clozemc - same as before but multi-choice, mixed - all the above).
+First you need to specify the form of generaion. The program can either generate questions based on a text file describing the problem (-t text) or based on a given keyword(s) (-t keyword). The first variant should containt questions that test all the important aspects of the text, while the second variant should generate questions that test the understanding of the given keyword(s).
+
+You can also use -c or --czech to specify if the input text is in Czech language; -f or --file to specify path for file that contains input text and -m or --mode to specify the type of questions generated (yn - yes/no, alt - alternative, tf - true/false, wh - who/what/where/when/why/how, whmc - same as before but multi-choice, cloze - fill-in-the-blank, clozemc - same as before but multi-choice, mixed - all the above).
 
 Example of running the program with input text in Czech from a file and generating yes/no questions:
 
 ```sh
-python src/generation.py -c -f data/input_cz.txt -m yn
+python src/generation.py -c -t text -f data/input_cz.txt -m yn
+```
+and for generating questions based on given keyword(s):
+```sh
+python src/generation.py -c -t keyword -m alt
 ```
 
 ### Output example

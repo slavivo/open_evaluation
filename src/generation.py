@@ -28,20 +28,24 @@ GPT_MODEL = config["DEFAULT"]["GPT_MODEL"]
 async def generate_questions(
     client,
     text,
+    level,
     mode="mixed",
     czech=False,
+    keyword=False,
 ) -> None:
     """
     Generates a question based on the input text
 
     Parameters:
     client (openai.AsyncClient): OpenAI API client
+    level (str): The educational level
     mode (str): The mode for generating the question
     text (str): The text to generate a question for
     czech (bool): Whether the input is in Czech language
+    keyword (bool): Whether the input is a keyword
     """
 
-    gen_prompt, gen_message = get_generation_prompt_and_message(text, mode, czech)
+    gen_prompt, gen_message = get_generation_prompt_and_message(text, level, mode, czech, keyword)
 
     messages = [
         {"role": "system", "content": gen_prompt},
@@ -93,18 +97,35 @@ async def main():
         help="The mode for generating the question",
     )
 
+    parser.add_argument(
+        "-t",
+        "--type",
+        choices=["keyword", "text"],
+        help="The type of the input text",
+    )
+
     args = parser.parse_args()
+
+    if not args.type:
+        print("Please specify the type of the input text.")
+        return
 
     client = openai.AsyncClient(api_key=OPENAI_KEY)
 
     text = ""
-    if not args.file:
-        text = input("Enter the text: ")
+    level = ""
+    if not args.file or args.type == "keyword":
+        if args.czech:
+            text = input("Zadejte klíčová slova: ")
+            level = input("Zadejte vzdělávací úroveň: ")
+        else:
+            text = input("Enter the keyword: ")
+            level = input("Enter the educational level: ")
     else:
         with open(args.file, "r") as file:
             text = file.read()
 
-    await generate_questions(client, text, czech=args.czech, mode=args.mode)
+    await generate_questions(client, text, level, czech=args.czech, mode=args.mode, keyword=args.type == "keyword") 
 
 
 if __name__ == "__main__":

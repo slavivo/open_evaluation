@@ -25,8 +25,10 @@ class GenerationRequest(BaseModel):
     This class defines the parameters for the generation request
     """
     text: str
+    level: str
     mode: Optional[str] = "mixed"
     czech: Optional[bool] = False
+    keyword: Optional[bool] = False
 
 
 class RequestParams:
@@ -237,70 +239,106 @@ def get_feedback_prompt_and_message(
 
     return feedback_prompt, feedback_message
 
-def get_generation_prompt_and_message(text, mode="mixed", czech=False) -> Tuple[str, str]:
+def get_generation_prompt_and_message(text, level, mode="mixed", czech=False, keyword=False) -> Tuple[str, str]:
     """
     Returns the prompt and message for generating questions based on the input text
 
     Parameters:
     text (str): The text to generate questions for
+    level (str): The educational level to consider when generating the questions
     mode (str): The mode for generating the question
     czech (bool): Whether the input is in Czech language
+    keyword (bool): Whether the input is a keyword
     """
-    if mode == "yn":
+    if not keyword:
+        if mode == "yn":
+            if not czech:
+                gen_prompt = f"Your task is to make yes-no questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit otázky typu ano-ne, které identifikují informace, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
+        elif mode == "alt":
+            if not czech:
+                gen_prompt = f"Your task is to make alternative questions (has two options to choose from) of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit alternativní otázky (na výběr jsou dvě možnosti) k identifikaci informací, které jsou explicitně uvedeny v daném textu. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
+        elif mode == "tf":
+            if not czech:
+                gen_prompt = f"Your task is to make true-false questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit otázky pravda-nepravda k identifikaci informací, které jsou explicitně uvedeny v daném textu. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
+        elif mode == "wh":
+            if not czech:
+                gen_prompt = f"Your task is to make who, what, when, where, why, and how open-ended questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit otevřené otázky typu kdo, co, kdy, kde, proč a jak, které identifikují informace, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
+        elif mode == "whmc":
+            if not czech:
+                gen_prompt = f"Your task is to make who, what, when, where, why, and how multiple choice questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit otázky typu kdo, co, kdy, kde, proč a jak s více volbami, které identifikují informace, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
+        elif mode == "cloze":
+            if not czech:
+                gen_prompt = f"Your task is to make fill-in-the-blank open-ended questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit otevřené otázky typu vyplňování mezery k identifikaci informací, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
+        elif mode == "clozemc":
+            if not czech:
+                gen_prompt = f"Your task is to make fill-in-the-blank multiple choice questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit otázky typu vyplňování mezery s více volbami k identifikaci informací, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
+        elif mode == "mixed":
+            if not czech:
+                gen_prompt = f"Your task is to make a mix of different types of open-ended or multiple-choice questions (yes-no, alternative, true-false, who, what, when, where, why, how, multiple choice, fill-in-the-blank) of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text and shouldn't include the answer."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit směs různých typů otevřených otázek nebo otázek s více odpovědi (ano-ne, alternativní, pravda-nepravda, kdo, co, kdy, kde, proč, jak, s více volbami, vyplňování mezery) k identifikaci informací, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl a neměli by obsahovat odpověď."
+        gen_message = f"Text: {text}"
+    else:
+        if mode == "yn":
+            if not czech:
+                gen_prompt = f"Your task is to make yes-no questions from the given keywords. These questions should test the reader's complete understanding of the topic related to the keywords."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit otázky typu ano-ne z daných klíčových slov. Tyto otázky by měly prověřit, zda čtenář zcela rozumí tématu souvisejícímu s klíčovými slovy."
+        elif mode == "alt":
+            if not czech:
+                gen_prompt = f"Your task is to make alternative questions (has two options to choose from) from the given keywords. These questions should test the reader's complete understanding of the topic related to the keywords."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit alternativní otázky (na výběr jsou dvě možnosti) z daných klíčových slov. Tyto otázky by měly prověřit, zda čtenář zcela rozumí tématu souvisejícímu s klíčovými slovy."
+        elif mode == "tf":
+            if not czech:
+                gen_prompt = f"Your task is to make true-false questions from the given keywords. These questions should test the reader's complete understanding of the topic related to the keywords."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit otázky pravda-nepravda z daných klíčových slov. Tyto otázky by měly prověřit, zda čtenář zcela rozumí tématu souvisejícímu s klíčovými slovy."
+        elif mode == "wh":
+            if not czech:
+                gen_prompt = f"Your task is to make who, what, when, where, why, and how open-ended questions from the given keywords. These questions should test the reader's complete understanding of the topic related to the keywords."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit otevřené otázky typu kdo, co, kdy, kde, proč a jak z daných klíčových slov. Tyto otázky by měly prověřit, zda čtenář zcela rozumí tématu souvisejícímu s klíčovými slovy."
+        elif mode == "whmc":
+            if not czech:
+                gen_prompt = f"Your task is to make who, what, when, where, why, and how multiple choice questions from the given keywords. These questions should test the reader's complete understanding of the topic related to the keywords."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit otázky typu kdo, co, kdy, kde, proč a jak s více volbami z daných klíčových slov. Tyto otázky by měly prověřit, zda čtenář zcela rozumí tématu souvisejícímu s klíčovými slovy."
+        elif mode == "cloze":
+            if not czech:
+                gen_prompt = f"Your task is to make fill-in-the-blank open-ended questions from the given keywords. These questions should test the reader's complete understanding of the topic related to the keywords."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit otevřené otázky typu vyplňování mezery z daných klíčových slov. Tyto otázky by měly prověřit, zda čtenář zcela rozumí tématu souvisejícímu s klíčovými slovy."
+        elif mode == "clozemc":
+            if not czech:
+                gen_prompt = f"Your task is to make fill-in-the-blank multiple choice questions from the given keywords. These questions should test the reader's complete understanding of the topic related to the keywords."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit otázky typu vyplňování mezery s více volbami z daných klíčových slov. Tyto otázky by měly prověřit, zda čtenář zcela rozumí tématu souvisejícímu s klíčovými slovy."
+        elif mode == "mixed":
+            if not czech:
+                gen_prompt = f"Your task is to make a mix of different types of open-ended or multiple-choice questions (yes-no, alternative, true-false, who, what, when, where, why, how, multiple choice, fill-in-the-blank) from the given keywords. These questions should test the reader's complete understanding of the topic related to the keywords and shouldn't include the answer."
+            else:
+                gen_prompt = f"Tvým úkolem je vytvořit směs různých typů otevřených otázek nebo otázek s více odpověďmi (ano-ne, alternativní, pravda-nepravda, kdo, co, kdy, kde, proč, jak, s více volbami, vyplňování mezery) z daných klíčových slov. Tyto otázky by měly prověřit, zda čtenář zcela rozumí tématu souvisejícímu s klíčovými slovy a neměly by obsahovat odpověď."
         if not czech:
-            gen_prompt = f"Your task is to make a yes-no questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
-            gen_message = f"Text: \n{text}\n"
+            gen_prompt += "You will also be given the educational level to consider when generating the questions."
+            gen_message = f"Keywords: {text}\nEducational level: {level}"
         else:
-            gen_prompt = f"Tvým úkolem je vytvořit otázky typu ano-ne, které identifikují informace, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
-            gen_message = f"Text: {text}"
-    elif mode == "alt":
-        if not czech:
-            gen_prompt = f"Your task is to make alternative questions (has two options to choose from) of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
-            gen_message = f"Text: \n{text}\n"
-        else:
-            gen_prompt = f"Tvým úkolem je vytvořit alternativní otázky (na výběr jsou dvě možnosti) k identifikaci informací, které jsou explicitně uvedeny v daném textu. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
-            gen_message = f"Text: {text}"
-    elif mode == "tf":
-        if not czech:
-            gen_prompt = f"Your task is to make true-false questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
-            gen_message = f"Text: \n{text}\n"
-        else:
-            gen_prompt = f"Tvým úkolem je vytvořit otázky pravda-nepravda k identifikaci informací, které jsou explicitně uvedeny v daném textu. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
-            gen_message = f"Text: {text}"
-    elif mode == "wh":
-        if not czech:
-            gen_prompt = f"Your task is to make who, what, when, where, why, and how open-ended questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
-            gen_message = f"Text: \n{text}\n"
-        else:
-            gen_prompt = f"Tvým úkolem je vytvořit otevřené otázky typu kdo, co, kdy, kde, proč a jak, které identifikují informace, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
-            gen_message = f"Text: {text}"
-    elif mode == "whmc":
-        if not czech:
-            gen_prompt = f"Your task is to make who, what, when, where, why, and how multiple choice questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
-            gen_message = f"Text: \n{text}\n"
-        else:
-            gen_prompt = f"Tvým úkolem je vytvořit otázky typu kdo, co, kdy, kde, proč a jak s více volbami, které identifikují informace, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
-            gen_message = f"Text: {text}"
-    elif mode == "cloze":
-        if not czech:
-            gen_prompt = f"Your task is to make fill-in-the-blank open-ended questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
-            gen_message = f"Text: \n{text}\n"
-        else:
-            gen_prompt = f"Tvým úkolem je vytvořit otevřené otázky typu vyplňování mezery k identifikaci informací, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
-            gen_message = f"Text: {text}"
-    elif mode == "clozemc":
-        if not czech:
-            gen_prompt = f"Your task is to make fill-in-the-blank multiple choice questions of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text."
-            gen_message = f"Text: \n{text}\n"
-        else:
-            gen_prompt = f"Tvým úkolem je vytvořit otázky typu vyplňování mezery s více volbami k identifikaci informací, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl."
-            gen_message = f"Text: {text}"
-    elif mode == "mixed":
-        if not czech:
-            gen_prompt = f"Your task is to make a mix of different types of open-ended or multple-choice questions (yes-no, alternative, true-false, who, what, when, where, why, how, multiple choice, fill-in-the-blank) of identifying information that is explictly shown in the given text. These questions should test the reader's complete understanding of the text and shouldn't include the answer."
-            gen_message = f"Text: \n{text}\n"
-        else:
-            gen_prompt = f"Tvým úkolem je vytvořit směs různých typů otevřených otázek nebo otázek s více odpovědi (ano-ne, alternativní, pravda-nepravda, kdo, co, kdy, kde, proč, jak, s více volbami, vyplňování mezery) k identifikaci informací, jež jsou v daném textu explicitně uvedeny. Tyto otázky by měly prověřit, zda čtenář textu zcela porozuměl a neměli by obsahovat odpověď."
-            gen_message = f"Text: {text}"
+            gen_prompt += "Bude ti také poskytnut vzdělávací úroveň, který máš zohlednit při generování otázek."
+            gen_message = f"Klíčová slova: {text}\nVzdělávací úroveň: {level}"
+
 
     return gen_prompt, gen_message

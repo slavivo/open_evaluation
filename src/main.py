@@ -39,10 +39,24 @@ security = HTTPBearer()
 async def generate_questions(
     client,
     text,
+    level,
     mode="mixed",
     czech=False,
+    keyword=False,
 ) -> None:
-    gen_prompt, gen_message = get_generation_prompt_and_message(text, mode, czech)
+    """
+    Generates a question based on the input text
+
+    Parameters:
+    client (openai.AsyncClient): OpenAI API client
+    level (str): The educational level
+    mode (str): The mode for generating the question
+    text (str): The text to generate a question for
+    czech (bool): Whether the input is in Czech language
+    keyword (bool): Whether the input is a keyword
+    """
+
+    gen_prompt, gen_message = get_generation_prompt_and_message(text, level, mode, czech, keyword)
 
     messages = [
         {"role": "system", "content": gen_prompt},
@@ -151,7 +165,7 @@ def get_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
 @app.post("/generate/")
 async def generate(request: GenerationRequest, api_key: str = Depends(get_api_key)):
     try:
-        result = await generate_questions(client, request.text, request.mode, request.czech)
+        result = await generate_questions(client, request.text, request.level, request.mode, request.czech, request.keyword)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
