@@ -1,44 +1,9 @@
 {
-    "data": [
-      {
-        "question": "Explain what a neuron is, detailing how they transmit information and what unique features they have.",
-        "criteria": "Must include the terms “synapse” and “action potential.” Must mention the role of neurotransmitters.",
-        "answer": "Neurons are cells that transmit information to other nerve, muscle, or gland cells. They use synapses"
-      },
-      {
-        "question": "What are the components and structure of a molecule of DNA?",
-        "criteria": "Mention base pairs, sugar, and phosphate. Describe that DNA is a double helix. Note that base pairs pair up in a specific way using hydrogen bond (AT and GC).",
-        "answer": "DNA is a complex molecule and it is shaped like a double helix ladder, where the rungs are base pairs ATGC and the scaffold is sugars and phosphates. The base pairs bind (A with G) and (C with T) using hydrogen bonds, which can be separated when the DNA is being read or duplicated."
-      },
-      {
-        "question": "How can large language models introduce biases into student evaluation?",
-        "criteria": "None provided",
-        "answer": "LLMs have bias because their training data can have toxic, biased, or inaccurate data in it. When evaluating students, LLMs could also penalize students that know information that is more recent or otherwise outside the LLM’s training set, which may appear to be inaccurate to the AI model. LLMs are also not designed to keep track of accurate information; they are autoregressive language models, and so they do not have a legitimate hold on fact and caution should be used when depending on an AI model for subtle communication."
-      },
-      {
-        "question": "How can large language models introduce biases into student evaluation? ",
-        "criteria": "None provided",
-        "answer": "LLMs are biased because they're made by large companies."
-      },
-      {
-        "question": "Vysvětlete, co je to neuron, jak přenáší informace a jaké má jedinečné vlastnosti.",
-        "criteria": "Musí obsahovat pojmy ‚synapse‘ a ‚akční potenciál‘.“ Musí zmínit úlohu neurotransmiterů.",
-        "answer": "Neurony jsou buňky, které předávají informace jiným nervovým, svalovým nebo žlázovým buňkám. Používají synapse."
-      },
-      {
-        "question": "Jaké jsou složky a struktura molekuly DNA?",
-        "criteria": "Uveďte páry bází, cukr a fosfát. Popište, že DNA je dvojitá šroubovice. Všimněte si, že páry bází se párují specifickým způsobem pomocí vodíkové vazby (AT a GC).",
-        "answer": "DNA je složitá molekula a má tvar dvojitého šroubovicového žebříku, kde příčky tvoří páry bází ATGC a lešení tvoří cukry a fosfáty. Páry bází se spojují (A s G) a (C s T) pomocí vodíkových vazeb, které se mohou při čtení nebo duplikaci DNA oddělit."
-      },
-      {
-        "question": "Jak mohou velké jazykové modely vnášet do hodnocení studentů zkreslení?",
-        "criteria": "Nebylo zadáno",
-        "answer": "Modely LLM mají zkreslení, protože jejich trénovací data mohou obsahovat toxická, zkreslená nebo nepřesná data. Při hodnocení studentů by LLM mohly penalizovat i studenty, kteří znají informace, které jsou novější nebo jinak mimo tréninkovou množinu LLM, což se modelu umělé inteligence může jevit jako nepřesné. LLM také nejsou určeny k tomu, aby sledovaly přesné informace; jsou to autoregresivní jazykové modely, a proto nemají legitimní držení faktů a při závislosti na modelu UI pro jemnou komunikaci je třeba postupovat obezřetně."
-      },
-      {
-        "question": "Jak mohou velké jazykové modely vnášet do hodnocení studentů zkreslení?",
-        "criteria": "Nebylo zadáno",
-        "answer": "LLM jsou zkreslené, protože je vytvářejí velké společnosti."
-      }
-    ]
-  }
+  "question": "Explain what a neuron is, detailing how they transmit information and what unique features they have.",
+  "criteria": "Must include the terms “synapse” and “action potential.” Must mention the role of neurotransmitters.",
+  "answers": [
+    "Neurons are cells that transmit information to other nerve, muscle, or gland cells. They use synapses.",
+    "Neuron are structures in our brain. They contain synapses that connect neurons together. They are used to transmit information and are responsible for out thinking.",
+    "They are in our brain and cause thinking."
+  ]
+}

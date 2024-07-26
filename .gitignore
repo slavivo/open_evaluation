@@ -1,2 +1,5 @@
 src/config.ini
 src/__pycache__
+data/generate_curl_example.txt
+data/evaluate_curl_example.txt
+

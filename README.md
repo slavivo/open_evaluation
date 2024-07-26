@@ -2,7 +2,7 @@
 
 This project uses OpenAI's GPT model for two tasks.
 
-1. Evaluating open-ended questions. It provides a grade (excellent/výborně, good/dobře, poor/špatně) and feedback for a student's answer to a question.
+1. Evaluating open-ended questions. It provides grades (excellent/výborně, good/dobře, poor/špatně), feedbacks for the students' answers to a question and a summary of all the answers to show overall performance, trends etc..
 2. Generating questions. Based on the input text it generates various types of questions that test the reader's complete understanding of the text.
 
 ## Prerequisites
@@ -33,21 +33,21 @@ GPT_MODEL = your_gpt_model
 
 ## Running evaluation
 
-You can run the evaluation script from the command line with the following command:
+You can run the evaluation script from the command line with the following arguments.
 
-```sh
-python src/evaluation.py
-```
-
-You can use -i or --input to enable input from console (for now default behaviour is to take the first item from data/answers.json); -f or --feedback to specify if feedback should be provided; -t or --type if feedback should be used in grading; -c or --czech if the input is in Czech language; -l or --logprobs to show logprobs of the categories.
+1. -p or --path to specify the path to the .json file with questions and answers. Example of the file format can be found in the data directory.
+2. -f or --feedback to specify if feedbacks should be provided
+3. -t or --type if feedbacks should be used in grading
+4. -c or --czech if the input is in Czech language
+5. -l or --logprobs to show logprobs of the categories.
 
 Example of running the program with feedback, using feedback in grading and in czech:
 
 ```sh
-python src/evaluation.py -f -t -c
+python src/evaluation.py -p data/answers.json -f -t -c
 ```
 
-### Output example
+### Output example of one question
 
 **Question:**
 Explain what a neuron is, detailing how they transmit information and what unique features they have.
@@ -94,7 +94,7 @@ You can run the generation script from the command line with the following comma
 python src/generation.py -m mixed
 ```
 
-First you need to specify the form of generaion. The program can either generate questions based on a text file describing the problem (-t text) or based on a given keyword(s) (-t keyword). The first variant should containt questions that test all the important aspects of the text, while the second variant should generate questions that test the understanding of the given keyword(s).
+First you need to specify the form of generation. The program can either generate questions based on a text file describing the problem (-t text) or based on a given keyword(s) (-t keyword). The first variant should containt questions that test all the important aspects of the text, while the second variant should generate questions that test the understanding of the given keyword(s).
 
 You can also use -c or --czech to specify if the input text is in Czech language; -f or --file to specify path for file that contains input text and -m or --mode to specify the type of questions generated (yn - yes/no, alt - alternative, tf - true/false, wh - who/what/where/when/why/how, whmc - same as before but multi-choice, cloze - fill-in-the-blank, clozemc - same as before but multi-choice, mixed - all the above).
 

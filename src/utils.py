@@ -14,7 +14,7 @@ class EvaluationRequest(BaseModel):
     """
     question: str
     criteria: str
-    answer: str
+    answers: list[str]
     provide_feedback: Optional[bool] = True
     use_feedback: Optional[bool] = False
     czech: Optional[bool] = False
@@ -184,60 +184,88 @@ def print_logprobs(logprobs):
 
 
 def get_grade_prompt_and_message(
-    answer, question, criteria, feedback=None, use_feedback=False, czech=False
-) -> Tuple[str, str]:
+    answers, question, criteria, feedbacks=None, use_feedback=False, czech=False
+) -> Tuple[str, list[str]]:
     """
     Returns the prompt and message for grading the answer
 
     Parameters:
-    answer (str): The student's answer to evaluate
+    answers (list): The students' answers to evaluate
     question (str): The question to evaluate
     criteria (str): The criteria to use for evaluation
-    feedback (str): The feedback to use for evaluation
+    feedbacks (list): The list of feedbacks to use for evaluation
     use_feedback (bool): Whether to use feedback in the evaluation
+    czech (bool): Whether to use Czech language
+    """
+    grade_messages = []
+    if not czech:
+        grade_prompt = f"You are simulating a teacher's assessment. You will be given answer to this question:\n{question}\n"
+        if use_feedback:
+            grade_prompt += "The input may also include feedback from a teacher to the question, which you can also use when grading.\n"
+        grade_prompt += f"You should also use these additional criterias when evaluation the answer:\n{criteria}\nThe possible grades are: excellent, good, poor. Your answer must be just the grade."
+    else:
+        grade_prompt = f"Simuluješ hodnocení učitele. Bude ti poskytnuta odpověď na tuto otázku:\n{question}\n"
+        if use_feedback:
+            grade_prompt += "Vstup může také zahrnovat zpětnou vazbu od učitele k otázce, kterou můžete také použít při hodnocení.\n"
+        grade_prompt += f"Měl bys také použít tato dodatečná kritéria při hodnocení odpovědi:\n{criteria}\nMožné známky jsou: výborně, dobře, špatně. Tvoje odpověď musí být pouze známka."
+    
+    for answer, feedback in zip(answers, feedbacks):
+        if not czech:
+            grade_message = f"The student's answer to be evaluated:\n{answer}"
+            if use_feedback:
+                grade_message += f"\nFeedback from a teacher:\n{feedback}"
+        else:
+            grade_message = f"Odpověď studenta k hodnocení:\n{answer}"
+            if use_feedback:
+                grade_message += f"\nZpětná vazba od učitele:\n{feedback}"
+        grade_messages.append(grade_message)
+
+    return grade_prompt, grade_messages
+
+def get_summary_prompt_and_message(
+    answers, question, criteria, czech=False
+) -> Tuple[str, str]:
+    """
+    Returns the prompt and message for summarizing the answers
+
+    Parameters:
+    answers (list): The students' answers to evaluate
+    question (str): The question to evaluate
+    criteria (str): The criteria to use for evaluation
+    czech (bool): Whether the input is in Czech language
     """
     if not czech:
-        grade_prompt = f"You are simulating a teacher's assessment. You will be given answer to this question:\n\n{question}\n\n"
-        if use_feedback:
-            grade_prompt += "The input may also include feedback from a teacher to the question, which you can also use when grading.\n\n"
-        grade_prompt = f"You should also use these additional criterias when evaluation the answer:\n\n{criteria}\n\nThe possible grades are: excellent, good, poor. Your answer must be just the grade."
-
-        grade_message = f"The student's answer to be evaluated:\n{answer}"
-        if use_feedback:
-            grade_message += f"\n\nFeedback from a teacher:\n{feedback}"
+        summary_prompt = f"Your task is to generate a consise summary of the students' answers to this question:\n{question}\nAnd these grading criterias:\n{criteria}\nThe summary should include:\n1. Overall Performance: Briefly describe how well the students performed according to the grading criteria.\n2. Common Struggles: Identify and summarize any common difficulties or misconceptions that students exhibited.\n3. Specific Areas of Difficulty: Highlight particular areas or aspects of the question where students struggled the most.\n4. General Observations: Note any patterns, trends, or noteworthy observations based on the students' answers."
+        summary_message = "The students' answers:\n"
     else:
-        grade_prompt = f"Simuluješ hodnocení učitele. Bude ti poskytnuta odpověď na tuto otázku:\n\n{question}\n\n"
-        if use_feedback:
-            grade_prompt += "Vstup může také zahrnovat zpětnou vazbu od učitele k otázce, kterou můžete také použít při hodnocení.\n\n"
-        grade_prompt = f"Měl bys také použít tato dodatečná kritéria při hodnocení odpovědi:\n\n{criteria}\n\nMožné známky jsou: výborně, dobře, špatně. Tvoje odpověď musí být pouze známka."
+        summary_prompt = f"Tvým úkolem je vytvořit přehledné shrnutí odpovědí žáků na tuto otázku:\n{question}\nA tato kritéria hodnocení:\n{criteria}\nShrnutí by mělo obsahovat:\n1. Celkový výkon: Stručně popište, jak dobře si žáci vedli podle kritérií hodnocení.\n2. Společné problémy: Uveďte a shrňte všechny běžné obtíže nebo chybné představy, které žáci vykazovali.\n3. Specifické oblasti obtíží: Zdůrazněte konkrétní oblasti nebo aspekty otázky, v nichž měli studenti největší potíže.\n4. Obecné postřehy: Všimněte si všech vzorců, trendů nebo pozoruhodných postřehů vycházejících z odpovědí studentů."
+        summary_message = "Odpovědi studentů:\n"
+    for i in range(len(answers)):
+            summary_message += f"{i+1}. {answers[i]}\n"
 
-        grade_message = f"Odpověď studenta k hodnocení:\n{answer}"
-        if use_feedback:
-            grade_message += f"\n\nZpětná vazba od učitele:\n{feedback}"
-
-    return grade_prompt, grade_message
+    return summary_prompt, summary_message
 
 
 def get_feedback_prompt_and_message(
-    question, criteria, answer, czech=False
-) -> Tuple[str, str]:
+    question, criteria, answers, czech=False
+) -> Tuple[str, list[str]]:
     """
     Returns the prompt and message for providing feedback
 
     Parameters:
     question (str): The question to evaluate
     criteria (str): The criteria to use for evaluation
-    answer (str): The student's answer to evaluate
-    use_feedback (bool): Whether to use feedback in the evaluation
+    answers (list): The students' answers to evaluate
+    czech (bool): Whether to use Czech language
     """
     if not czech:
-        feedback_prompt = f"Your task is to give feedback to a student on this question:\n\n{question}\n\nYou are using Feedforward (formative assessment). Be brief and friendly, use emoticons. Encourage the student but avoid praise or flattery. When giving feedback, also use these additional criteria:\n\n{criteria}\n\nThe structure of your feedback must be as follows:\n- (In your answer it was great that: here you indicate what the pupil answered correctly, explain very briefly the evidence for the points above, either in bullet points or a short summary.)\n- (Based on your answer, I recommend that you focus this: here, give no more than two brief points that the pupil should avoid in the future, e.g. what was inaccurate, factually incorrect, etc., explain very briefly the evidence for the above points, either in bullet points or a short summary.)"
-        feedback_message = f"The student's answer:\n{answer}\n"
+        feedback_prompt = f"Your task is to give feedback to a student on this question:\n{question}\nYou are using Feedforward (formative assessment). Be brief and friendly, use emoticons. Encourage the student but avoid praise or flattery. When giving feedback, also use these additional criteria:\n{criteria}\nThe structure of your feedback must be as follows:\n- (In your answer it was great that: here you indicate what the pupil answered correctly, explain very briefly the evidence for the points above, either in bullet points or a short summary.)\n- (Based on your answer, I recommend that you focus this: here, give no more than two brief points that the pupil should avoid in the future, e.g. what was inaccurate, factually incorrect, etc., explain very briefly the evidence for the above points, either in bullet points or a short summary.)"
+        feedback_messages = [f"The student's answer:\n{answer}\n" for answer in answers]
     else:
-        feedback_prompt = f"Tvým úkolem je poskytnout žákovi zpětnou vazbu na tuto otázku:\n\n{question}\n\nPoužíváš metodu Feedforward (formativní hodnocení). Buď stručný a přátelský, používej emotikony. Povzbuzuj žáka, ale vyvaruj se chválení nebo pochlebování. Při poskytování zpětné vazby také použij tyto dodatečné kritéria:\n\n{criteria}\n\nStruktura tvé zpětné vazby musí být následující:\n- (Ve tvé odpovědi bylo skvělé, že: zde uveď, co žák/žákyně odpověděl/a správně, velmi stručně vysvětli důkazy k výše uvedeným bodům, buď formou odrážek, nebo krátkého shrnutí.)\n- (Na základě tvé odpovědi ti doporučuji zaměřit se na: zde uveď maximálně dva stručné body, kterých by se měl/a žák/žákyně v budoucnu vyvarovat, co např. bylo nepřesné, fakticky nesprávné apod., velmi stručně vysvětli důkazy k výše uvedeným bodům, buď formou odrážek, nebo krátkého shrnutí.)"
-        feedback_message = f"Odpověď studenta:\n{answer}\n"
+        feedback_prompt = f"Tvým úkolem je poskytnout žákovi zpětnou vazbu na tuto otázku:\n{question}\nPoužíváš metodu Feedforward (formativní hodnocení). Buď stručný a přátelský, používej emotikony. Povzbuzuj žáka, ale vyvaruj se chválení nebo pochlebování. Při poskytování zpětné vazby také použij tyto dodatečné kritéria:\n{criteria}\nStruktura tvé zpětné vazby musí být následující:\n- (Ve tvé odpovědi bylo skvělé, že: zde uveď, co žák/žákyně odpověděl/a správně, velmi stručně vysvětli důkazy k výše uvedeným bodům, buď formou odrážek, nebo krátkého shrnutí.)\n- (Na základě tvé odpovědi ti doporučuji zaměřit se na: zde uveď maximálně dva stručné body, kterých by se měl/a žák/žákyně v budoucnu vyvarovat, co např. bylo nepřesné, fakticky nesprávné apod., velmi stručně vysvětli důkazy k výše uvedeným bodům, buď formou odrážek, nebo krátkého shrnutí.)"
+        feedback_messages = [f"Odpověď studenta:\n{answer}\n" for answer in answers]
 
-    return feedback_prompt, feedback_message
+    return feedback_prompt, feedback_messages
 
 def get_generation_prompt_and_message(text, level, mode="mixed", czech=False, keyword=False) -> Tuple[str, str]:
     """
